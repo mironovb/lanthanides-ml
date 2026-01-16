@@ -1,0 +1,121 @@
+### ML Model Specification: Lanthanide Separation FCNN 
+
+**1. MODEL ARCHITECTURE**
+
+* **Model Type:** Fully Connected Neural Network (FCNN).
+* 
+**Framework:** PyTorch (version 1.9.1).
+
+
+* 
+**Network Structure** (Confirmed via Table S1 ):
+
+
+* **Input Layer:** 2,291 neurons.
+* **Hidden Layer 1:** 512 neurons.
+* **Hidden Layer 2:** 128 neurons.
+* **Hidden Layer 3:** 16 neurons.
+* **Output Layer:** 1 neuron (predicts log D).
+
+
+* **Activation Function:** PReLU (Parametric Rectified Linear Unit).
+* 
+*Validation:* Table S1 confirms PReLU achieved the highest  (0.85) compared to ReLU (0.82) and ELU (0.84) at 15,000 epochs.
+
+
+
+
+
+**2. INPUT FEATURE SPECIFICATIONS (2,291 Total Features)**
+
+* **A. Ligand Representation:**
+* 
+**ECFP Fingerprints:** 2,048 bits (Radius=2, 2048 length, chirality=True).
+
+
+* 
+**RDKit Descriptors:** 208 physicochemical descriptors.
+
+
+
+
+* B. Lanthanide Descriptors (14 Features) :
+
+
+1. Atomic number.
+2. Number of outer shell electrons.
+3. Melting point of the metal (K).
+4. Boiling point of the metal (K).
+5. Density of the metal ().
+6. First ionization energy ().
+7. Second ionization energy ().
+8. Third ionization energy ().
+9. Electron affinity ().
+10. Atomic radius ().
+11. Covalent radius ().
+12. Pauling electronegativity.
+13. Ionic radius of Ln(III) ().
+14. Standard entropy ().
+
+
+* C. Extraction Condition Descriptors :
+
+
+* **System State:**
+* Temperature (K).
+* Ligand concentration (mM).
+* Ln(III) concentration (mM).
+
+
+* **Aqueous Phase:**
+* Inorganic acid concentration (M) (derived from pH if necessary).
+* Dipole moment of the inorganic acid (D).
+
+
+* **Organic Phase:**
+* Volume ratios of organic solvents A and B (if single solvent, B=0).
+
+
+* **Solvent Descriptors** (7 features calculated for *both* Solvent A and Solvent B):
+1. Molar mass ().
+2. Density ().
+3. Boiling point (K).
+4. Melting point (K).
+5. Dipole moment (D).
+6. Solubility in water ().
+7. Log P (partition coefficient in n-octanol/water).
+
+
+
+
+
+**3. TRAINING CONFIGURATION**
+
+* **Optimizer:** SGD (Stochastic Gradient Descent).
+* **Loss Function:** L1 Loss (Mean Absolute Error).
+* 
+**Hyperparameters** (Optimized via Grid Search in Table S1 ):
+
+
+* **Learning Rate:** 0.00001 ().
+* **Weight Decay:** 0.01.
+* **Epochs:** 15,000.
+* 
+*Note on Tuning:* The SI shows that increasing epochs from 5,000 to 15,000 significantly improved PReLU performance from  to .
+
+
+
+
+* **Batch Strategy:** Random selection of 80% of training data per epoch.
+
+**4. EXPECTED PERFORMANCE METRICS**
+
+* **Validation Set Results (Best Model):**
+* 
+: 0.85.
+
+
+* MAE: 0.34.
+
+
+* RMSE: 0.53.
